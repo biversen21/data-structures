@@ -13,17 +13,9 @@ binaryTreeMethods.insert = function(value) {
 
   var recurse = function(node) {
     if (value >= node.value) {
-      if (node.right) {
-        recurse(node.right)
-      } else {
-        node.right = makeBinarySearchTree(value);
-      }
+      node.right ? recurse(node.right) : node.right = makeBinarySearchTree(value);
     } else {
-      if (node.left) {
-        recurse(node.left)
-      } else {
-        node.left = makeBinarySearchTree(value);
-      }
+      node.left ? recurse(node.left) : node.left = makeBinarySearchTree(value);
     }
   }
   recurse(this);
@@ -39,11 +31,7 @@ binaryTreeMethods.contains = function (target) {
         result = true;
         nextNode = undefined;
       } else {
-        if (target > node.value) {
-          nextNode = node.right;
-        } else {
-          nextNode = node.left;
-        }
+        nextNode = (target > node.value) ? node.right : node.left;
       }
     }
     if (nextNode) {
@@ -55,7 +43,18 @@ binaryTreeMethods.contains = function (target) {
 };
 
 binaryTreeMethods.depthFirstLog = function (callback) {
-
+  var recurse = function(node) {
+    if (node !== undefined) {
+      callback(node.value);
+      if (node.right) {
+        recurse(node.right);
+      }
+      if (node.left) {
+        recurse(node.left);
+      }
+    }
+  }
+  recurse(this);
 };
 
 /*
