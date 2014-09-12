@@ -51,5 +51,17 @@ describe('linkedList', function() {
     expect(linkedList.contains(4)).to.equal(false);
   });
 
-  // add more tests here to test the functionality of linkedList
+  it('should add to head when addToHead is called', function() {
+    linkedList.addToHead(4);
+    linkedList.addToHead(5);
+    linkedList.removeHead();
+    expect(linkedList.contains(4)).to.equal(true);
+  });
+
+  it('should remove from tail when removeTail is called', function() {
+    linkedList.addToTail(4);
+    linkedList.addToTail(5);
+    linkedList.removeTail();
+    expect(linkedList.contains(5)).to.equal(false);
+  });
 });
