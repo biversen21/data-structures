@@ -1,90 +1,80 @@
 var Graph = function(value){
-  this.children = [];
-  this.value = value;
+  this.nodes = {};
+  this.totalNodes = 0;
 };
 
 Graph.prototype.addNode = function(newNode, toNode){
-  var node = new Graph(newNode);
 
-  if (this.value === undefined) {
-    this.value = newNode;
-  } else {
-    this.children.push(node);
+  var Node = function() {
+    this.edges = {};
+    this.totalEdges = 0;
+  }
+
+  this.nodes[newNode] = new Node();
+  this.totalNodes++;
+
+  if (toNode !== undefined) {
+    this.nodes[newNode].edges[toNode] = toNode;
+    this.nodes[newNode].totalEdges++;
+    this.nodes[toNode].edges[newNode] = newNode;
+    this.nodes[toNode].totalEdges++;
+  }
+
+  if (this.totalNodes === 2) {
+    var arr = [];
+    for (var key in this.nodes) {
+      arr.push(key);
+    }
+    this.addEdge(arr[0], arr[1]);
   }
 };
 
-Graph.prototype.getNode = function(target) {
-  var node;
-  var recurse = function(currentNode) {
-    if (currentNode !== undefined) {
-      if (currentNode.value === target) {
-        node = currentNode;
-      }
-      for (var i = 0; i < currentNode.children.length; i++) {
-        recurse(currentNode.children[i]);
-      }
-    }
-  };
-  recurse(this);
-  return node;
-}
-
 Graph.prototype.contains = function(target){
-  var result = false;
-  var recurse = function(node) {
-    if (node !== undefined) {
-      if (node.value === target) {
-        result = true;
-      }
-      for (var i = 0; i < node.children.length; i++) {
-        recurse(node.children[i]);
-      }
-    }
-  };
-  recurse(this);
-  return result;
+  if (this.nodes[target] !== undefined) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 Graph.prototype.removeNode = function(target){
-  var node = this.getNode(target);
-  delete node.value;
-
-  for (var i = 0; i < node.children.length; i++) {
-    for (var j = 0; j < node.children[i].length; j++) {
-      node.children[i].children.splice(j, 1);
-    }
+  var edges = this.nodes[target].edges;
+  for (var key in edges) {
+    delete this.nodes[key].edges[target];
+    this.nodes[key].totalEdges--;
   }
+  delete this.nodes[target];
+  this.totalNodes--;
 };
 
 Graph.prototype.getEdge = function(fromNode, toNode){
-  var node = this.getNode(fromNode);
-  for(var i = 0; i < node.children.length; i++) {
-    if (node.children[i].value === toNode) {
-      return true;
-    }
-  } // else
-  return false;
+  if (this.nodes[fromNode].edges[toNode] !== undefined) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 Graph.prototype.addEdge = function(fromNode, toNode){
-  var node = this.getNode(fromNode);
-  var otherNode = this.getNode(toNode);
-  node.children.push(otherNode);
-  otherNode.children.push(node);
+  this.nodes[fromNode].edges[toNode] = toNode;
+  this.nodes[fromNode].totalEdges++;
+  this.nodes[toNode].edges[fromNode] = fromNode;
+  this.nodes[toNode].totalEdges++;
 }
 
 Graph.prototype.removeEdge = function(fromNode, toNode){
-  var node = this.getNode(fromNode);
-  for (var i = 0; i < node.children.length; i++) {
-    for (var j = 0; j < node.children[i].length; j++) {
-      node.children[i].children.splice(j, 1);
-    }
-    if (node.children[i].value === toNode) {
-      node.children.splice(i, 1);
-      if (node.children.length === 0) {
-        delete node.value;
-      }
-    }
+  delete this.nodes[fromNode].edges[toNode];
+  this.nodes[fromNode].totalEdges--;
+  delete this.nodes[toNode].edges[fromNode];
+  this.nodes[toNode].totalEdges--;
+
+  if (this.nodes[fromNode].totalEdges === 0) {
+    this.removeNode(fromNode);
+    this.totalNodes--;
+  }
+  if (this.nodes[toNode].totalEdges === 0) {
+    this.removeNode(toNode);
+    this.totalNodes--;
   }
 };
 
