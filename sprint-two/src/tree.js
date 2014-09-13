@@ -1,7 +1,8 @@
 var makeTree = function(value){
   var newTree = {};
   newTree.value = value;
-  newTree.children = undefined;
+  newTree.children = [];
+  newTree.parent = undefined;
   _.extend(newTree,treeMethods);
   return newTree;
 };
@@ -13,12 +14,20 @@ var treeMethods = {};
 
 treeMethods.addChild = function(value){
   var tree = makeTree(value);
-
-  if (this.children === undefined) {
-    this.children = [];
-  }
+  tree.parent = this;
   this.children[this.children.length] = tree;
 };
+
+treeMethods.removeFromParent = function(){
+  // remove connection between this and this.parent
+  for (var i = 0; i < this.parent.children.length; i++) {
+    if (this.parent.children[i].value === this.value) {
+      this.parent.children.splice(i, 1);
+    }
+  }
+  this.parent = undefined;
+
+}
 
 treeMethods.contains = function(target){
   var result = false;
