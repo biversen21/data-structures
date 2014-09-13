@@ -46,7 +46,19 @@ treeMethods.contains = function(target){
   return result;
 };
 
-
+treeMethods.traverse = function(callback){
+  var recurse = function(node){
+    if (node.value !== undefined) {
+      callback(node.value);
+    }
+    if (node.children !== undefined) {
+      for (var i = 0; i < node.children.length; i++) {
+        recurse(node.children[i]);
+      }
+    }
+  }
+  recurse(this);
+}
 /*
  * Complexity: What is the time complexity of the above functions?
  */

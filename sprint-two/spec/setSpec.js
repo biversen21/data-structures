@@ -24,4 +24,18 @@ describe('set', function() {
     expect(set.contains("Mel Gibson")).to.equal(false);
   });
 
+  it('should accept number as a unique key', function(){
+    set.add(2);
+    set.add("2");
+    set.remove("2");
+    expect(set.contains(2)).to.equal(true);
+  });
+
+  it('should accept an object as a unique key', function(){
+    set.add({"bob":"bobby"});
+    set.add(true);
+    expect(set.contains({"bob":"bobby"})).to.equal(true);
+    expect(set.contains(true)).to.equal(true);
+  });
+
 });
