@@ -30,7 +30,7 @@ binaryTreeMethods.contains = function (target) {
   var result = false;
   var nextNode;
   var recurse = function(node) {
-    if (node !== undefined) {
+    if (!!node) {
 
       if (node.value === target) {
         result = true;
@@ -49,7 +49,7 @@ binaryTreeMethods.contains = function (target) {
 
 binaryTreeMethods.depthFirstLog = function (callback) {
   var recurse = function(node) {
-    if (node !== undefined) {
+    if (!!node) {
       callback(node.value);
       if (node.right) {
         recurse(node.right);
@@ -65,7 +65,7 @@ binaryTreeMethods.depthFirstLog = function (callback) {
 binaryTreeMethods.breadthFirstLog = function (callback) {
   callback(this.value);
   var recurse = function(node) {
-    if (node !== undefined) {
+    if (!!node) {
       // callback(node.value);
       if (node.left) {
         callback(node.left.value);
@@ -87,8 +87,8 @@ binaryTreeMethods.breadthFirstLog = function (callback) {
 binaryTreeMethods.depths = function() {
   var min = Infinity;
   var max = 0;
-  var recurse = function(node,count) {
-    if (node !== undefined){
+  var recurse = function(node, count) {
+    if (!!node){
       count++;
     }
     if (!node.left && !node.right) {
@@ -111,7 +111,6 @@ binaryTreeMethods.rebalance = function(tree) {
   this.depthFirstLog( function(value) {
     arr.push(value);
   });
-  console.log(arr);
   arr.sort( function(a,b) { return a - b});
   // overwrite daddy node
   var median = Math.floor(arr.length / 2);

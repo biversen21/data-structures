@@ -77,7 +77,6 @@ describe('tree', function() {
     tree.children[0].addChild(7);
     tree.children[1].addChild(8);
     tree.traverse(storeIt);
-    console.log(array);
     expect(array).to.deep.equal([5,5,7,6,8]);
   });
 

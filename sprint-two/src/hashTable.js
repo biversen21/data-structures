@@ -11,7 +11,7 @@ HashTable.prototype.resize = function(newLimit) {
   this._storage = makeLimitedArray(this._limit);
   var self = this;
   oldStorage.each( function(buck) {
-    if (Array.isArray(buck)) {
+    if (buck) {
       for (var j = 0; j < buck.length; j++) {
         self.insert(buck[j][0],buck[j][1]);
       }
@@ -43,7 +43,7 @@ HashTable.prototype.insert = function(k, v){
 HashTable.prototype.retrieve = function(k){
   var i = getIndexBelowMaxForKey(k, this._limit);
   var arr = this._storage.get(i);
-  if (Array.isArray(arr)) {
+  if (arr) {
     for (var j = 0; j < arr.length; j++) {
       if (arr[j][0] === k) {
         return arr[j][1];

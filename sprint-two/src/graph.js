@@ -13,7 +13,7 @@ Graph.prototype.addNode = function(newNode, toNode){
   this.nodes[newNode] = new Node();
   this.totalNodes++;
 
-  if (toNode !== undefined) {
+  if (toNode) {
     this.addEdge(newNode, toNode);
   }
 
@@ -27,7 +27,7 @@ Graph.prototype.addNode = function(newNode, toNode){
 };
 
 Graph.prototype.contains = function(target){
-  return (this.nodes[target] !== undefined) ? true : false;
+  return (this.nodes[target]) ? true : false;
 };
 
 Graph.prototype.removeNode = function(target){

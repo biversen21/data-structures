@@ -35,7 +35,7 @@ treeMethods.contains = function(target){
     if (node.value === target) {
       result = true;
     } else {
-      if (node.children) {
+      if (!!node.children) {
         for (var i = 0; i < node.children.length; i++) {
           recurse(node.children[i]);
         }
@@ -48,10 +48,10 @@ treeMethods.contains = function(target){
 
 treeMethods.traverse = function(callback){
   var recurse = function(node){
-    if (node.value !== undefined) {
+    if (!!node.value) {
       callback(node.value);
     }
-    if (node.children !== undefined) {
+    if (!!node.children) {
       for (var i = 0; i < node.children.length; i++) {
         recurse(node.children[i]);
       }
