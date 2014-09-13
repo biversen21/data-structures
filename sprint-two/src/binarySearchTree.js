@@ -19,6 +19,11 @@ binaryTreeMethods.insert = function(value) {
     }
   }
   recurse(this);
+  var results = this.depths();
+
+  if ((results.min / results.max) < 0.5 ) {
+    this.rebalance(this);
+  }
 };
 
 binaryTreeMethods.contains = function (target) {
@@ -57,6 +62,83 @@ binaryTreeMethods.depthFirstLog = function (callback) {
   recurse(this);
 };
 
+binaryTreeMethods.breadthFirstLog = function (callback) {
+  callback(this.value);
+  var recurse = function(node) {
+    if (node !== undefined) {
+      // callback(node.value);
+      if (node.left) {
+        callback(node.left.value);
+      }
+      if (node.right) {
+        callback(node.right.value);
+      }
+      if (node.left) {
+        recurse(node.left);
+      }
+      if (node.right) {
+        recurse(node.right);
+      }
+    }
+  }
+  recurse(this);
+};
+
+binaryTreeMethods.depths = function() {
+  var min = Infinity;
+  var max = 0;
+  var recurse = function(node,count) {
+    if (node !== undefined){
+      count++;
+    }
+    if (!node.left && !node.right) {
+      min = count < min ? count : min;
+      max = count > max ? count : max;
+    }
+    if (node.left) {
+      recurse(node.left, count);
+    }
+    if (node.right) {
+      recurse(node.right, count);
+    }
+  }
+  recurse(this,0);
+  return {min:min, max:max};
+}
+
+binaryTreeMethods.rebalance = function(tree) {
+  var arr = [];
+  this.depthFirstLog( function(value) {
+    arr.push(value);
+  });
+  console.log(arr);
+  arr.sort( function(a,b) { return a - b});
+  // overwrite daddy node
+  var median = Math.floor(arr.length / 2);
+  this.value = arr[median];
+  this.left = undefined;
+  this.right = undefined;
+  this.children = undefined;
+
+  // insert children
+  arr.splice(median,1);
+  for (var i = 0; i < arr.length; i++) {
+    this.insert(arr[i]);
+  }
+}
+
 /*
  * Complexity: What is the time complexity of the above functions?
  */
+
+
+
+
+
+
+
+
+
+
+
+

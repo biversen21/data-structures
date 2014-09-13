@@ -14,10 +14,7 @@ Graph.prototype.addNode = function(newNode, toNode){
   this.totalNodes++;
 
   if (toNode !== undefined) {
-    this.nodes[newNode].edges[toNode] = toNode;
-    this.nodes[newNode].totalEdges++;
-    this.nodes[toNode].edges[newNode] = newNode;
-    this.nodes[toNode].totalEdges++;
+    this.addEdge(newNode, toNode);
   }
 
   if (this.totalNodes === 2) {
@@ -30,11 +27,7 @@ Graph.prototype.addNode = function(newNode, toNode){
 };
 
 Graph.prototype.contains = function(target){
-  if (this.nodes[target] !== undefined) {
-    return true;
-  } else {
-    return false;
-  }
+  return (this.nodes[target] !== undefined) ? true : false;
 };
 
 Graph.prototype.removeNode = function(target){
@@ -48,11 +41,7 @@ Graph.prototype.removeNode = function(target){
 };
 
 Graph.prototype.getEdge = function(fromNode, toNode){
-  if (this.nodes[fromNode].edges[toNode] !== undefined) {
-    return true;
-  } else {
-    return false;
-  }
+  return (this.nodes[fromNode].edges[toNode] !== undefined) ? true : false;
 };
 
 Graph.prototype.addEdge = function(fromNode, toNode){

@@ -50,7 +50,7 @@ HashTable.prototype.retrieve = function(k){
       }
     }
   }
-  return (arr && arr.length > 0 ? arr : null);
+  return null;
 };
 
 HashTable.prototype.remove = function(k){

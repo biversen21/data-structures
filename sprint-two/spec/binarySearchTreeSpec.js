@@ -34,7 +34,50 @@ describe('binarySearchTree', function() {
     binarySearchTree.insert(2);
     binarySearchTree.insert(3);
     binarySearchTree.depthFirstLog(func);
-    console.log(array);
     expect(array).to.eql([5,2,3]);
   });
+
+  it('should execute a callback on every value in a tree using breadthFirstLog', function(){
+    var array = [];
+    var func = function(value){ array.push(value); };
+    binarySearchTree.insert(2);
+    binarySearchTree.insert(3);
+    binarySearchTree.insert(10);
+    binarySearchTree.insert(15);
+    binarySearchTree.insert(20);
+    binarySearchTree.insert(7);
+    binarySearchTree.breadthFirstLog(func);
+    expect(array).to.eql([5,2,10,3,7,15,20]);
+  });
+
+  it('should find max depth and min depth when calling depths', function() {
+    binarySearchTree.insert(2);
+    binarySearchTree.insert(3);
+    binarySearchTree.insert(10);
+    binarySearchTree.insert(15);
+    binarySearchTree.insert(20);
+    binarySearchTree.insert(7);
+    binarySearchTree.insert(21);
+    var results = binarySearchTree.depths();
+    expect(results.min).to.equal(3);
+    expect(results.max).to.equal(5);
+  });
+
+  it('should rebalance the tree when calling rebalance', function() {
+    var arrBreadth = [];
+    var func = function(value){ arrBreadth.push(value); };
+    var arrDepth = [];
+    var logger = function(value){ arrDepth.push(value); };
+    binarySearchTree.insert(2);
+    binarySearchTree.insert(10);
+    binarySearchTree.insert(15);
+    binarySearchTree.insert(20);
+    binarySearchTree.insert(21);
+    binarySearchTree.breadthFirstLog(func);
+    binarySearchTree.depthFirstLog(logger);
+    console.log(arrBreadth);
+    expect(arrBreadth).to.eql([10,2,15,5,20,21]);
+    expect(arrDepth).to.eql([10,2,5,15,20,21]);
+  });
+
 });
