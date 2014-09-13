@@ -1,74 +1,75 @@
-var HashTable = function(limit){
-  this._limit = limit;
+var HashTable = function(){
+  this._limit = 8;
   this._storage = makeLimitedArray(this._limit);
   this._size = 0;
 };
 
-HashTable.prototype.resize = function() {
-  console.log(this._size);
-  console.log(this._limit);
-  if (this._size / this._limit >= 0.75) {
-    var tempArr = [];
-    this._storage.each(function(v, k, c) {
-      tempArr.push(v);
-    });
-    // console.log(tempArr);
-    this._limit *= 2;
-    this._storage = makeLimitedArray(this._limit);
-    var self = this;
-    tempArr.forEach(function(el, index, col) {
-      if (el !== undefined) {
-        for (j = 0; j < el.length; j++) {
-          if (el[j] !== undefined) {
-            var i = getIndexBelowMaxForKey(el[j].k, self._limit);
-            self.insert(i, el[j].v);
-          }
-        }
+HashTable.prototype.resize = function(newLimit) {
+  this._limit = newLimit;
+  var oldStorage = this._storage;
+  this._size = 0;
+  this._storage = makeLimitedArray(this._limit);
+  var self = this;
+  oldStorage.each( function(buck) {
+    if (Array.isArray(buck)) {
+      for (var j = 0; j < buck.length; j++) {
+        self.insert(buck[j][0],buck[j][1]);
       }
-    });
-  }
+    }
+  });
 }
 
 HashTable.prototype.insert = function(k, v){
   var i = getIndexBelowMaxForKey(k, this._limit);
-  var arr = this._storage.get(i);
+  var arr = this._storage.get(i) || [];
 
-  if (arr === undefined) {
-    var value = [];
-    value.push({k: k, v: v});
-    this._storage.set(i, value);
-    this._size++;
-  } else {
-    arr.push({k:k, v:v});
-    this._storage.set(i, arr);
+  // first collision overwrite if same key
+  for (var j = 0; j < arr.length; j++) {
+    if (arr[j][0] === k){
+      arr[j][1] = v;
+    }
   }
-  this.resize();
+
+  // actually store arr in one of the buckets
+  arr.push([k,v]);
+  this._storage.set(i,arr);
+  this._size++;
+
+  if (this._size / this._limit > 0.75) {
+    this.resize(this._limit * 2);
+  }
 };
 
 HashTable.prototype.retrieve = function(k){
   var i = getIndexBelowMaxForKey(k, this._limit);
   var arr = this._storage.get(i);
-  for (var j = 0; j < arr.length; j++) {
-    if (arr[j].k === k) {
-      return arr[j].v;
+  if (Array.isArray(arr)) {
+    for (var j = 0; j < arr.length; j++) {
+      if (arr[j][0] === k) {
+        return arr[j][1];
+      }
     }
-  } // else
-  return null;
+  }
+  return (arr && arr.length > 0 ? arr : null);
 };
 
 HashTable.prototype.remove = function(k){
   var i = getIndexBelowMaxForKey(k, this._limit);
   var arr = this._storage.get(i);
+  var results;
   for (var j = 0; j < arr.length; j++) {
-    if (arr[j].k === k) {
-      arr.splice(j, 1);
+    if (arr[j][0] === k) {
+      results = arr.splice(j,1);
     }
   }
   if (arr.length === 0) {
     this._size--;
   }
-  this._storage.set(i, arr);
-  this.resize();
+
+  if (this._size / this._limit < 0.25) {
+    this.resize(this._limit * 0.5);
+  }
+
 };
 
 
